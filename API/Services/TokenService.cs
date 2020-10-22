@@ -22,7 +22,8 @@ namespace API.Services
             var claims = new List<Claim>
             {
                 // assign username as one of the claims
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName.ToString())
             };
 
             // create credentials

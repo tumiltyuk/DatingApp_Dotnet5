@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -32,11 +33,22 @@ namespace API.Controllers
 
         // api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var usersToReturn = await _userRepository.GetMembersAsync();
+            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            userParams.CurrentUsername = user.UserName;
 
-            return Ok(usersToReturn);
+            if (string.IsNullOrEmpty(userParams.SelectedGender))
+                userParams.SelectedGender = user.Gender == "male" ? "female" : "male";
+
+            // get users from repo/ db 
+            var users = await _userRepository.GetMembersAsync(userParams);
+
+            // update headers using extension method
+            Response.AddPaginationHeader(users.CurrentPage, users.PageSize, 
+                users.TotalCount, users.TotalPages);
+
+            return Ok(users);
         }
 
         // api/users/paul
