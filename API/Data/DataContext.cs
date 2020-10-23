@@ -10,6 +10,28 @@ namespace API.Data
         }
 
         public DbSet<AppUser> Users { get; set; }
+        public DbSet<UserLike> Likes { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UserLike>()
+                .HasKey(k => new {k.SourceUserId, k.LikedUserId}); // Primary key made up of Composite key 
+
+            // Declare relationship - one "SourceUser" can have many outgoing likes - [Likes Made by User] 
+            builder.Entity<UserLike>()
+                .HasOne(s => s.SourceUser)
+                .WithMany(l => l.LikesMadeByUser)
+                .HasForeignKey(s => s.SourceUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Declare relationship - one "LikedUser" can have many incoming likes - [Likes Received by User]
+            builder.Entity<UserLike>()
+                .HasOne(s => s.LikedUser)
+                .WithMany(l => l.LikesReceivedByUser)
+                .HasForeignKey(s => s.LikedUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
 
     }
 }
