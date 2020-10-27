@@ -49,7 +49,7 @@ namespace API.Controllers
             };
 
             // add Like to SourceUser
-            sourceUser.LikesMadeByUser.Add(userLike);
+            sourceUser.LikesSent.Add(userLike);
 
             // save changes
             if (await _userRepository.SaveAllAsync()) return Ok();

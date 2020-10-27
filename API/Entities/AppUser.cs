@@ -23,9 +23,14 @@ namespace API.Entities
         public ICollection<Photo> Photos { get; set; }
         
         // Likes Received by User
-        public ICollection<UserLike> LikesReceivedByUser { get; set; }  // LikedByUsers
-        // Likes made/sent by User
-        public ICollection<UserLike> LikesMadeByUser { get; set; } // LikedUsers
+        public ICollection<UserLike> LikesReceived { get; set; }  // LikedByUsers
+        // Likes sent by User
+        public ICollection<UserLike> LikesSent { get; set; } // LikedUsers
+
+        // Messages Received by User
+        public ICollection<Message> MessagesReceived {get; set; }
+        // Messages Sent by User
+        public ICollection<Message> MessagesSent {get; set; }
         
         // public int GetAge()
         // {

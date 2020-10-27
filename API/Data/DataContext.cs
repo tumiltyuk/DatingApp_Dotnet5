@@ -11,6 +11,7 @@ namespace API.Data
 
         public DbSet<AppUser> Users { get; set; }
         public DbSet<UserLike> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -18,19 +19,31 @@ namespace API.Data
             builder.Entity<UserLike>()
                 .HasKey(k => new {k.SourceUserId, k.LikedUserId}); // Primary key made up of Composite key 
 
-            // Declare relationship - one "SourceUser" can have many outgoing likes - [Likes Made by User] 
+            // Declare relationship - one "SourceUser" can have many outgoing likes - [Likes Sent by User] 
             builder.Entity<UserLike>()
                 .HasOne(s => s.SourceUser)
-                .WithMany(l => l.LikesMadeByUser)
+                .WithMany(l => l.LikesSent)
                 .HasForeignKey(s => s.SourceUserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Declare relationship - one "LikedUser" can have many incoming likes - [Likes Received by User]
             builder.Entity<UserLike>()
                 .HasOne(s => s.LikedUser)
-                .WithMany(l => l.LikesReceivedByUser)
+                .WithMany(l => l.LikesReceived)
                 .HasForeignKey(s => s.LikedUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Declare relationship - one Recipient can have many Messages Received - [Messages Received by User]
+            builder.Entity<Message>()
+                .HasOne(u => u.Recipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Declare relationship - one Sender can have many Messages Sent - [Messages Sent by User]
+            builder.Entity<Message>()
+                .HasOne(u => u.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }
