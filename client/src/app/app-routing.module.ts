@@ -12,6 +12,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { MemberDetailedResolver } from './_resolvers/member-detailed.resolver';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { AdminGuard } from './_guards/admin.guard';
 
 
 
@@ -31,6 +33,7 @@ const routes: Routes = [
       { path: 'member/edit', component: MemberEditComponent, canDeactivate: [PreventUnsavedChangesGuard] },    // indicates the route of 'localhost:4200/member/edit'
       { path: 'lists', component: ListsComponent },               // indicats the route of 'localhost:4200/lists'
       { path: 'messages', component: MessagesComponent },         // indicats the route of 'localhost:4200/messages'
+      { path: 'admin', component: AdminPanelComponent, canActivate: [AdminGuard]},
     ]
   },
   { path: 'errors', component: TestErrorsComponent },

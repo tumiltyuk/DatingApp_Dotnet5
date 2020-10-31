@@ -41,6 +41,10 @@ constructor(private http: HttpClient) { }
   }
 
   setCurrentUser(user: User) {
+    user.roles = [];
+    const roles = this.getDecodedToken(user.token).role; // gets ALL roles
+    // check if roles result is singular or many (single string or array)
+    Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
   }
@@ -48,6 +52,10 @@ constructor(private http: HttpClient) { }
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+  }
+
+  getDecodedToken(token) {
+    return JSON.parse(atob(token.split('.')[1])); // middle part of payload 
   }
 
 }
